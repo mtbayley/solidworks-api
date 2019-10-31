@@ -20,6 +20,11 @@ namespace AngelSix.SolidDna
         public int CommandId { get; set; }
 
         /// <summary>
+        /// The code defined ID of the item. Between 41658 and 41999.
+        /// </summary>
+        public int DefinedId { get; set; }
+
+        /// <summary>
         /// The unique Id used for identifying a callback that should be associated with this item
         /// </summary>
         public string CallbackId { get; set; } = Guid.NewGuid().ToString("N");

@@ -148,6 +148,16 @@ namespace AngelSix.SolidDna
         /// </summary>
         public event Action SelectionChanged = () => { };
 
+        /// <summary>
+        /// Called when the selected objects in the model has changed
+        /// </summary>
+        public event Action SelectionCleared = () => { };
+
+        /// <summary>
+        /// Called when a new selection is made in the model
+        /// </summary>
+        public event Action NewSelection = () => { };
+
         #endregion
 
         #region Constructor
@@ -225,8 +235,9 @@ namespace AngelSix.SolidDna
                     AsAssembly().FileSavePostNotify += FileSavePostNotify;
                     AsAssembly().ModifyNotify += FileModified;
                     AsAssembly().RegenPostNotify2 += AssemblyOrPartRebuilt;
-                    AsAssembly().UserSelectionPostNotify += UserSelectionPostNotify;
-                    AsAssembly().ClearSelectionsNotify += UserSelectionPostNotify;
+                    AsAssembly().UserSelectionPostNotify += UserSelectionChangedPostNotify;
+                    AsAssembly().ClearSelectionsNotify += UserSelectionClearedPostNotify;
+                    AsAssembly().NewSelectionNotify += ModelNewSelectionNotify;
                     break;
                 case ModelType.Part:
                     AsPart().ActiveConfigChangePostNotify += ActiveConfigChangePostNotify;
@@ -236,8 +247,9 @@ namespace AngelSix.SolidDna
                     AsPart().FileSavePostNotify += FileSavePostNotify;
                     AsPart().ModifyNotify += FileModified;
                     AsPart().RegenPostNotify2 += AssemblyOrPartRebuilt;
-                    AsPart().UserSelectionPostNotify += UserSelectionPostNotify;
-                    AsPart().ClearSelectionsNotify += UserSelectionPostNotify;
+                    AsPart().UserSelectionPostNotify += UserSelectionChangedPostNotify;
+                    AsPart().ClearSelectionsNotify += UserSelectionClearedPostNotify;
+                    AsPart().NewSelectionNotify += ModelNewSelectionNotify;
                     break;
                 case ModelType.Drawing:
                     AsDrawing().ActivateSheetPostNotify += SheetActivatePostNotify;
@@ -250,8 +262,9 @@ namespace AngelSix.SolidDna
                     AsDrawing().FileSavePostNotify += FileSavePostNotify;
                     AsDrawing().ModifyNotify += FileModified;
                     AsDrawing().RegenPostNotify += DrawingRebuilt;
-                    AsDrawing().UserSelectionPostNotify += UserSelectionPostNotify;
-                    AsDrawing().ClearSelectionsNotify += UserSelectionPostNotify;
+                    AsDrawing().UserSelectionPostNotify += UserSelectionChangedPostNotify;
+                    AsDrawing().ClearSelectionsNotify += UserSelectionClearedPostNotify;
+                    AsDrawing().NewSelectionNotify += ModelNewSelectionNotify;
                     break;
             }
         }
@@ -346,10 +359,34 @@ namespace AngelSix.SolidDna
         /// Called when the user changes the selected objects
         /// </summary>
         /// <returns></returns>
-        protected int UserSelectionPostNotify()
+        protected int UserSelectionChangedPostNotify()
         {
             // Inform Listeners
             SelectionChanged();
+
+            return 0;
+        }
+
+        /// <summary>
+        /// Called when the user clears selection on the selected objects
+        /// </summary>
+        /// <returns></returns>
+        protected int UserSelectionClearedPostNotify()
+        {
+            // Inform Listeners
+            SelectionCleared();
+
+            return 0;
+        }
+
+        /// <summary>
+        /// Fired when a new selection is made
+        /// </summary>
+        /// <returns></returns>
+        protected int ModelNewSelectionNotify()
+        {
+            // Inform Listeners
+            NewSelection();
 
             return 0;
         }

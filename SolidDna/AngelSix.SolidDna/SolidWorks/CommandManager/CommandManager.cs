@@ -15,7 +15,7 @@ namespace AngelSix.SolidDna
         /// <summary>
         /// A list of all created command groups
         /// </summary>
-        private List<CommandManagerGroup> mCommandGroups = new List<CommandManagerGroup>();
+        private readonly List<CommandManagerGroup> mCommandGroups = new List<CommandManagerGroup>();
 
         /// <summary>
         /// A list of all created command flyouts
@@ -302,7 +302,7 @@ namespace AngelSix.SolidDna
             for (var i = mCommandGroups.Count - 1; i >= 0; i--)
                 RemoveCommandGroup(mCommandGroups[i]);
 
-            // Remove all command flyouts
+            // Remove all command flyoutsC
             for (var i = mCommandFlyouts.Count - 1; i >= 0; i--)
                 RemoveCommandFlyout(mCommandFlyouts[i]);
 

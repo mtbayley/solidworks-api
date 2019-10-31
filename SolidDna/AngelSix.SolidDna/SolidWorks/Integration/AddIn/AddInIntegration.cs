@@ -413,7 +413,7 @@ namespace AngelSix.SolidDna
                 SolidWorks = new SolidWorksApplication((SldWorks)Marshal.GetActiveObject("SldWorks.Application"), 0);
 
                 // Log it
-                Logger.LogDebugSource($"Aquired active instance SolidWorks in Stand-Alone mode");
+                Logger.LogDebugSource($"Acquired active instance SolidWorks in Stand-Alone mode");
 
                 // Return if successful
                 return SolidWorks != null;
