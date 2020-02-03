@@ -20,15 +20,6 @@ namespace AngelSix.SolidDna
     /// </summary>
     public abstract class AddInIntegration : ISwAddin
     {
-        #region Protected Members
-
-        /// <summary>
-        /// A list of assemblies to use when resolving any missing references
-        /// </summary>
-        protected List<AssemblyName> mReferencedAssemblies = new List<AssemblyName>();
-
-        #endregion
-
         #region Public Properties
 
         /// <summary>
@@ -45,11 +36,6 @@ namespace AngelSix.SolidDna
         /// Represents the current SolidWorks application
         /// </summary>
         public static SolidWorksApplication SolidWorks { get; set; }
-
-        /// <summary>
-        /// Gets the list of all known reference assemblies in this solution
-        /// </summary>
-        public AssemblyName[] ReferencedAssemblies => mReferencedAssemblies.ToArray();
 
         #endregion
 
@@ -448,23 +434,6 @@ namespace AngelSix.SolidDna
         #region Assembly Resolve Methods
 
         /// <summary>
-        /// Adds any reference assemblies to the assemblies that get resolved when loading assemblies
-        /// based on the reference type. To add all references from a project, pass in any type that is
-        /// contained in the project as the reference type
-        /// </summary>
-        /// <typeparam name="ReferenceType">The type contained in the assembly where the references are</typeparam>
-        public void AddReferenceAssemblies<ReferenceType>()
-        {
-            // Find all reference assemblies from the type
-            var referencedAssemblies = typeof(ReferenceType).Assembly.GetReferencedAssemblies();
-
-            // If there are any references
-            if (referencedAssemblies?.Length > 0)
-                // Add them
-                mReferencedAssemblies.AddRange(referencedAssemblies);
-        }
-
-        /// <summary>
         /// Attempts to resolve missing assemblies based on a list of known references
         /// primarily from SolidDna and the Add-in project itself
         /// </summary>
@@ -473,8 +442,11 @@ namespace AngelSix.SolidDna
         /// <returns></returns>
         private Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
         {
+            // Find all reference assemblies from the type
+            var referencedAssemblies = Assembly.GetCallingAssembly().GetReferencedAssemblies();
+
             // Try and find a reference assembly that matches...
-            var resolvedAssembly = mReferencedAssemblies.FirstOrDefault(f => string.Equals(f.FullName, args.Name, StringComparison.InvariantCultureIgnoreCase));
+            var resolvedAssembly = referencedAssemblies.FirstOrDefault(f => string.Equals(f.Name, args.Name.Split(',')[0], StringComparison.InvariantCultureIgnoreCase));
 
             // If we didn't find any assembly
             if (resolvedAssembly == null)
